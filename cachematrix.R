@@ -1,24 +1,39 @@
-## Rj Programming Assignment2 Lexical Scoping
-## 22 March 2015 Excercised by Jule On Bonsai
-
-## Put comments here that give an overall description of what your
-## functions do
+## R Programming Assignment2 Lexical Scoping
+## 22 March 2015 Excercised by Jule Bonsai
 
 ## Exercise to cache the inverse of a matrix
 ## for use in special situation 
 ## where the (unchanged) inverse matrix is needed several times
+
+## Using example:
+##   m <- matrix(c(4, 3, 3, 2), 2,2)
+##   x <- makeCacheMatrix(m)
+##   inv <- cacheSolve(x)
+##   inv
 
 
 ## makeCacheMatrix creates a special "matrix" object  
 ## that can cache its inverse.
 
 makeCacheMatrix <- function(x = matrix()) {
-  m <- NULL
-  ## in work
-  data <-x$get()
-  m <-  solve(data,...)
-  ## in work
-  m 
+  
+  inv <- NULL
+  
+  set <- function(y) {
+    x <<- y
+    inv <<- NULL
+  }
+  
+  get <- function() x
+  
+  setinv <- function(invers) inv <<- invers
+  
+  getinv <- function () inv
+  
+  list(set = set, get = get,
+       setinv = setinv,
+       getinv = getinv)
+  
 }
 
 
@@ -30,12 +45,20 @@ makeCacheMatrix <- function(x = matrix()) {
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
-  if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
+  
+  inv <- x$getinv()
+  
+  if(!is.null(inv)) {
+    message("INFO: getting cached data")
+    return(inv) 
   }
-  data <-x$get()
-  m <-  solve(data,...)
-  ## in work
-  m
+  
+  data <- x$get()
+  
+  inv <- solve(data)
+  
+  x$setinv(inv)
+  
+  inv
+  
 }
